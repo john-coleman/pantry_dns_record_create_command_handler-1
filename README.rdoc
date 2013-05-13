@@ -1,0 +1,3 @@
+== Welcome to Pantry
+
+Copy and modify config/database.yml.sample to config/database.yml
