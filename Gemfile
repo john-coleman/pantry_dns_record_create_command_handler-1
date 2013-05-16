@@ -10,6 +10,12 @@ gem 'mysql2'
 # Deploy with Capistrano
 gem 'capistrano'
 
+# Run with Passenger
+gem 'passenger'
+
+# Run with Unicorn
+gem 'unicorn'
+
 # To use debugger
 # gem 'debugger'
 group :test, :development do
