@@ -11,10 +11,10 @@ gem 'mysql2'
 gem 'capistrano'
 
 # Run with Passenger
-gem 'passenger'
+#gem 'passenger'
 
 # Run with Unicorn
-gem 'unicorn'
+#gem 'unicorn'
 
 # To use debugger
 # gem 'debugger'
