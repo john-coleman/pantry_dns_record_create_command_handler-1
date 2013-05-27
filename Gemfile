@@ -1,24 +1,18 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
 gem 'mysql2'
 
 # Deploy with Capistrano
 gem 'capistrano'
+gem 'strong_parameters'
 
-# Run with Passenger
-#gem 'passenger'
+group :development do
+  gem 'thin'
+end
 
-# Run with Unicorn
-#gem 'unicorn'
-
-# To use debugger
-# gem 'debugger'
 group :test, :development do
+  gem 'factory_girl_rails'
   gem 'pry-rails'
   gem 'rspec-rails'
   gem 'cucumber-rails', require: false
