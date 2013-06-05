@@ -6,6 +6,7 @@ gem 'mysql2'
 # Deploy with Capistrano
 gem 'capistrano'
 gem 'strong_parameters'
+gem 'haml-rails'
 
 group :development do
   gem 'thin'
