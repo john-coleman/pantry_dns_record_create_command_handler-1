@@ -5,6 +5,8 @@ gem 'mysql2'
 
 gem 'strong_parameters'
 gem 'haml-rails'
+gem 'chef'
+gem 'em-winrm'
 
 group :development do
   gem 'thin'
