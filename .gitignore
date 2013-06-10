@@ -17,3 +17,6 @@
 
 # Ignore aptana project config
 /.project
+
+/config/chef.yml
+/config/chef/*.pem
