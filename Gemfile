@@ -10,6 +10,7 @@ gem 'em-winrm'
 
 group :development do
   gem 'thin'
+  gem 'chef-zero'
 end
 
 group :test, :development do
