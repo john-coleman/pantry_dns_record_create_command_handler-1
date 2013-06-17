@@ -21,3 +21,4 @@
 
 /config/chef.yml
 /config/chef/*.pem
+*.pem

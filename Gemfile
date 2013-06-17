@@ -15,6 +15,7 @@ end
 group :test, :development do
   gem 'factory_girl_rails'
   gem 'pry-rails'
+  gem 'pry-debugger'
   gem 'rspec-rails'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
