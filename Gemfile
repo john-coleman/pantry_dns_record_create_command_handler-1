@@ -16,7 +16,7 @@ group :test, :development do
   gem 'chef-zero'
   gem 'factory_girl_rails'
   gem 'pry-rails'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '> 2.14.rc1'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
   gem 'ci_reporter'
