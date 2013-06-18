@@ -10,10 +10,10 @@ gem 'em-winrm'
 
 group :development do
   gem 'thin'
-  gem 'chef-zero'
 end
 
 group :test, :development do
+  gem 'chef-zero'
   gem 'factory_girl_rails'
   gem 'pry-rails'
   gem 'rspec-rails'
