@@ -8,6 +8,7 @@ gem 'strong_parameters'
 gem 'haml-rails'
 gem 'chef'
 gem 'em-winrm'
+gem 'daemons'
 
 group :development do
   gem 'thin'
