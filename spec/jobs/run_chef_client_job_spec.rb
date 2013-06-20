@@ -19,6 +19,7 @@ describe RunChefClientJob do
       end
 
       it "runs chef-client using ssh" do
+        pending
         expect(SshRunner).to receive(:new).and_return(runner)
         RunChefClientJob.new(hosts, job.id)
       end
