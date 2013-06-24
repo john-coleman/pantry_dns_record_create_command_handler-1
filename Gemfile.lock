@@ -147,6 +147,7 @@ GEM
     multi_json (1.7.7)
     mysql2 (0.3.11)
     mysql2 (0.3.11-x86-mingw32)
+    net-ldap (0.2.2)
     net-ssh (2.6.7)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
@@ -164,6 +165,14 @@ GEM
       mixlib-shellout
       systemu
       yajl-ruby
+    omniauth (1.1.4)
+      hashie (>= 1.2, < 3)
+      rack
+    omniauth-ldap (1.0.3)
+      net-ldap (~> 0.2.2)
+      omniauth (~> 1.0)
+      pyu-ruby-sasl (~> 0.0.3.1)
+      rubyntlm (~> 0.1.1)
     polyglot (0.3.3)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -181,6 +190,7 @@ GEM
       pry (>= 0.9.10)
     puma (1.6.3)
       rack (~> 1.2)
+    pyu-ruby-sasl (0.0.3.3)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -291,6 +301,7 @@ DEPENDENCIES
   factory_girl_rails
   haml-rails
   mysql2
+  omniauth-ldap
   pry-debugger
   pry-rails
   rails (= 3.2.13)
