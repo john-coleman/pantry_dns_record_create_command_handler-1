@@ -14,6 +14,8 @@ gem 'daemons'
 
 group :development do
   gem 'thin'
+  gem 'guard-rspec'
+  gem 'guard-cucumber'
 end
 
 group :test, :development do
