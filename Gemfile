@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.13'
 gem 'mysql2'
 gem 'delayed_job_active_record'
-
 gem 'omniauth-ldap'
 
 gem 'strong_parameters'
