@@ -32,4 +32,8 @@ RSpec.configure do |config|
   config.after(:suite) do
     @@server.stop
   end
+  
+  config.before(:each, type: :controller) do
+    session[:user_id] = 1
+  end
 end
