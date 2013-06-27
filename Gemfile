@@ -20,6 +20,8 @@ end
 
 group :test, :development do
   gem 'chef-zero'
+  gem 'guard-cucumber'
+  gem 'guard-rspec'
   gem 'factory_girl_rails'
   gem 'pry-rails'
   gem 'rspec-rails', '> 2.14.rc1'
