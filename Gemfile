@@ -17,6 +17,7 @@ gem 'coffee-rails'
 gem 'uglifier'
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'bootstrap-sass', '~> 2.3.2.0'
 
 group :development do
@@ -37,4 +38,5 @@ group :test, :development do
   gem 'database_cleaner'
   gem 'ci_reporter'
   gem 'timecop'
+  gem 'capybara-webkit'
 end
