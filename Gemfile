@@ -12,6 +12,13 @@ gem 'chef'
 gem 'em-winrm'
 gem 'daemons'
 
+gem 'sass-rails'
+gem 'coffee-rails'
+gem 'uglifier'
+
+gem 'jquery-rails'
+gem 'bootstrap-sass', '~> 2.3.2.0'
+
 group :development do
   gem 'thin'
   gem 'guard-rspec'
