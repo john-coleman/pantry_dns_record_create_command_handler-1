@@ -12,8 +12,7 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
-/tmp/*.txt
-/tmp/pids/*.pid
+/tmp
 /config/database.yml
 
 # Ignore aptana project config
