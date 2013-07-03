@@ -11,6 +11,7 @@ gem 'haml-rails'
 gem 'chef'
 gem 'em-winrm'
 gem 'daemons'
+gem 'fog'
 
 gem 'sass-rails'
 gem 'coffee-rails'
