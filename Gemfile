@@ -37,7 +37,6 @@ group :test, :development do
   gem 'pry-debugger'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
-  gem 'ci_reporter'
   gem 'timecop'
   gem 'capybara-webkit'
 end
