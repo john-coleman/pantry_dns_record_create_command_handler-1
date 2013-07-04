@@ -22,3 +22,4 @@
 /config/chef/*.pem
 *.pem
 .DS_Store
+/.*cache
