@@ -2,3 +2,5 @@
 
 1. Copy and modify config/database.yml.sample to config/database.yml
 2. Install QT for tests https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit
+
+See the wonga wiki for more details.
