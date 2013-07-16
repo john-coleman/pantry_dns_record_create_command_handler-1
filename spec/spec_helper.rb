@@ -20,6 +20,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 Chef::Config[:chef_server_url] = 'http://127.0.0.1:8889'
 RSpec.configure do |config|
+  config.include(RSpec::Fire)
   config.use_transactional_fixtures = true
 
   # If true, the base class of anonymous controllers will be inferred

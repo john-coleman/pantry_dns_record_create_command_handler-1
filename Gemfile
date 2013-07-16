@@ -36,6 +36,7 @@ group :test, :development do
   gem 'simplecov', require: false
   gem 'simplecov-rcov', require: false
   gem 'rspec-rails'
+  gem 'rspec-fire'
   gem 'pry-debugger'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
