@@ -33,6 +33,8 @@ group :test, :development do
   gem 'chef-zero'
   gem 'factory_girl_rails'
   gem 'pry-rails'
+  gem 'simplecov', require: false
+  gem 'simplecov-rcov', require: false
   gem 'rspec-rails'
   gem 'pry-debugger'
   gem 'cucumber-rails', require: false

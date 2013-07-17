@@ -18,6 +18,9 @@
 # Ignore aptana project config
 /.project
 
+# Ignore code coverage reports
+/coverage
+
 /config/chef.yml
 /config/chef/*.pem
 *.pem
