@@ -302,6 +302,12 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 1.0)
       wasabi (~> 1.0)
+    simplecov (0.7.1)
+      multi_json (~> 1.0)
+      simplecov-html (~> 0.7.1)
+    simplecov-html (0.7.1)
+    simplecov-rcov (0.2.3)
+      simplecov (>= 0.4.1)
     slop (3.4.5)
     sprockets (2.2.2)
       hike (~> 1.2)
@@ -383,6 +389,8 @@ DEPENDENCIES
   rails (= 3.2.13)
   rspec-rails
   sass-rails
+  simplecov
+  simplecov-rcov
   strong_parameters
   thin
   timecop
