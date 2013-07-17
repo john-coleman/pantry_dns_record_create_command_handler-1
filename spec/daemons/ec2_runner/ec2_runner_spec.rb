@@ -10,7 +10,9 @@ describe Daemons::EC2Runner do
       instance_name: "sqs test",
       flavor: "t1.micro",
       ami: "ami-fedfd48a",
-      team: "test team"
+      team: "test team",
+      subnet_id: "subnet-f3c63a98", 
+      security_group_ids: "sg-f94dc88e"
     }
   }
   let(:good_msg) { test_hash.to_json }
@@ -29,7 +31,9 @@ describe Daemons::EC2Runner do
         "test_name",
         "t1.micro",
         "ami-fedfd48a",
-        "test_team" )
+        "test_team",
+        "subnet-f3c63a98",
+        "sg-f94dc88e" )
       ).not_to be nil
     end
   end

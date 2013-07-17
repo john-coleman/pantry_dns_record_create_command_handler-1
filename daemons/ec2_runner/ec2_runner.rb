@@ -6,147 +6,152 @@ require 'json'
 require 'fog'
 require 'timeout'
 
-class EC2Runner < Struct.new(:testing)
-  cfile = YAML.load_file(File.join(File.dirname(__FILE__), "daemon.yml"))
-  @@config = cfile["production"]
-  AWS.config(@@config["aws"])
+module Daemons
+  class Daemons::EC2Runner < Struct.new(:testing)
+    cfile = YAML.load_file(File.join(File.dirname(__FILE__), "daemon.yml"))
+    @@config = cfile["production"]
+    AWS.config(@@config["aws"])
 
-  #Send error details along with node id to sns error topic
-  def log_error(error)
-    begin
-      #If node id isn't returned in reasonable time assume !ec2 node
-      status = Timeout::timeout(2){
-        instance_id = `wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`
-      }
-    rescue Timeout::Error
-      instance_id = "local"
-    end
-    sns = AWS::SNS.new()
-    topic = sns.topics[@@config["sns"]["error_arn"]]    
-    error_msg = "[##ERROR##] Node #{instance_id} in ec2_runner: #{error}"
-    topic.publish error_msg
-    puts error_msg
-  end
-
-
-  def machine_already_booted(request_id)
-    ec2 = AWS::EC2.new
-    ec2.instances.tagged('pantry_request_id').tagged_values("#{request_id}").any?
-  end
-
-
-  def boot_machine(pantry_request_id, instance_name, flavor, ami, team, subnet_id, security_group_ids)
-    fog = Fog::Compute.new(
-      provider: 'AWS',
-      aws_access_key_id: @@config["aws"]["aws_access_key_id"],
-      aws_secret_access_key: @@config["aws"]["aws_secret_access_key"],
-      region: @@config["aws"]["region"]
-    )
-    ec2_inst = fog.servers.create(
-      :image_id => ami,
-      :flavor_id => flavor,
-      :subnet_id => subnet_id,
-      :security_group_ids => security_group_ids
-    )
-    if !testing
-      fog.tags.create(
-        :resource_id => ec2_inst.identity,
-        :key => 'Name',
-        :value => instance_name
-      )
-     fog.tags.create(
-        :resource_id => ec2_inst.identity,
-        :key => 'team',
-        :value => team
-      )
-      fog.tags.create(
-        :resource_id => ec2_inst.identity,
-        :key => 'pantry_request_id',
-        :value => pantry_request_id
-      )
-      puts "#{ec2_inst.state}"
-      ec2_inst.wait_for { ready? }
-    end
-    previous_status = nil
-    while true do 
-      #Not a good idea to hammer AWS with requests.
-      sleep(Integer(@@config["aws_request_wait"]))
-      # Valid values: ok | impaired | initializing | insufficient-data | not-applicable
+    #Send error details along with node id to sns error topic
+    def log_error(error)
+      begin
+        #If node id isn't returned in reasonable time assume !ec2 node
+        status = Timeout::timeout(2){
+          instance_id = `wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`
+        }
+      rescue Timeout::Error
+        instance_id = "local"
+      end
       if !testing
-        instance_status = fog.describe_instance_status('InstanceId'=>ec2_inst.id).body["instanceStatusSet"][0]["instanceStatus"]["status"]
-      else
-        instance_status = "ok"   
-      end     
-      if instance_status != previous_status
-        puts "#{instance_status}"
-        previous_status = instance_status
+        sns = AWS::SNS.new()
+        topic = sns.topics[@@config["sns"]["error_arn"]]    
+        error_msg = "[##ERROR##] Node #{instance_id} in ec2_runner: #{error}"
+        topic.publish error_msg
       end
-
-      case instance_status
-        when "initializing"
-          #Continue
-        when "ok"
-          return ec2_inst.id
-        when "impaired"
-          log_error("AWS instance returned status: impaired")
-        when "insufficient-data"
-          log_error("AWS instance returned status: insufficient-data")
-        when "not-applicable"
-          log_error("AWS instance returned status: not-applicable")
-        else
-          log_error("Unexpected AWS status encountered: #{instance_status}")
-      end
+      puts error_msg
     end
-  end
 
-  def raise_machine_booted_event(request_id)
-    sns = AWS::SNS.new()
-    topic = sns.topics[@@config["sns"]["topic_arn"]]
-    topic.publish "#{request_id}"
-  end
 
-  def handle_message(msg_body)
-    begin
-      msg_json = JSON.parse(msg_body)
-      if !machine_already_booted(msg_json["pantry_request_id"])
-        puts "Attempting to boot machine."
-        instance_id = boot_machine(
-          msg_json["pantry_request_id"],
-          msg_json["instance_name"],
-          msg_json["flavor"],
-          msg_json["ami"],
-          msg_json["team"]
+    def machine_already_booted(request_id)
+      ec2 = AWS::EC2.new
+      ec2.instances.tagged('pantry_request_id').tagged_values("#{request_id}").any?
+    end
+
+
+    def boot_machine(pantry_request_id, instance_name, flavor, ami, team, subnet_id, security_group_ids)
+      fog = Fog::Compute.new(
+        provider: 'AWS',
+        aws_access_key_id: @@config["aws"]["aws_access_key_id"],
+        aws_secret_access_key: @@config["aws"]["aws_secret_access_key"],
+        region: @@config["aws"]["region"]
+      )
+      ec2_inst = fog.servers.create(
+        :image_id => ami,
+        :flavor_id => flavor,
+        :subnet_id => subnet_id,
+        :security_group_ids => security_group_ids
+      )
+      if !testing
+        fog.tags.create(
+          :resource_id => ec2_inst.identity,
+          :key => 'Name',
+          :value => instance_name
         )
-      else
-        log_error("Requested existing machine (Pantry id: #{msg_json["pantry_request_id"]}). Booting not attempted.")
+       fog.tags.create(
+          :resource_id => ec2_inst.identity,
+          :key => 'team',
+          :value => team
+        )
+        fog.tags.create(
+          :resource_id => ec2_inst.identity,
+          :key => 'pantry_request_id',
+          :value => pantry_request_id
+        )
+        puts "#{ec2_inst.state}"
+        ec2_inst.wait_for { ready? }
       end
-      if !testing
-        raise_machine_booted_event(msg_json["pantry_request_id"])
+      previous_status = nil
+      while true do 
+        #Not a good idea to hammer AWS with requests.
+        sleep(Integer(@@config["aws_request_wait"]))
+        # Valid values: ok | impaired | initializing | insufficient-data | not-applicable
+        if !testing
+          instance_status = fog.describe_instance_status('InstanceId'=>ec2_inst.id).body["instanceStatusSet"][0]["instanceStatus"]["status"]
+        else
+          instance_status = "ok"   
+        end     
+        if instance_status != previous_status
+          puts "#{instance_status}"
+          previous_status = instance_status
+        end
+
+        case instance_status
+          when "initializing"
+            #Continue
+          when "ok"
+            return ec2_inst.id
+          when "impaired"
+            log_error("AWS instance returned status: impaired")
+          when "insufficient-data"
+            log_error("AWS instance returned status: insufficient-data")
+          when "not-applicable"
+            log_error("AWS instance returned status: not-applicable")
+          else
+            log_error("Unexpected AWS status encountered: #{instance_status}")
+        end
       end
-      return true      
-    rescue Exception => e
-      log_error(e)
-      return false
+    end
+
+    def raise_machine_booted_event(request_id, instance_id)
+      sns = AWS::SNS.new()
+      topic = sns.topics[@@config["sns"]["topic_arn"]]
+      topic.publish "#{request_id}"
+    end
+
+    def handle_message(msg_body)
+      begin
+        msg_json = JSON.parse(msg_body)
+        if !machine_already_booted(msg_json["pantry_request_id"])
+          puts "Attempting to boot machine."
+          instance_id = boot_machine(
+            msg_json["pantry_request_id"],
+            msg_json["instance_name"],
+            msg_json["flavor"],
+            msg_json["ami"],
+            msg_json["team"],
+            msg_json["subnet_id"],
+            msg_json["security_group_ids"]
+          )
+        else
+          log_error("Requested existing machine (Pantry id: #{msg_json["pantry_request_id"]}). Booting not attempted.")
+        end
+        if !testing
+          raise_machine_booted_event(msg_json["pantry_request_id"])
+        end
+        return true      
+      rescue Exception => e
+        log_error(e)
+        return false
+      end
+    end
+
+    def run
+      puts "Ec2 Runner started"
+      sqs = AWS::SQS.new()
+      queue = sqs.queues.named(@@config["sqs"]["queue_name"])
+
+      queue.poll do |msg|
+        handle_message(msg.body)
+      end
     end
   end
 
-  def run
-    puts "Ec2 Runner started"
-    sqs = AWS::SQS.new()
-    queue = sqs.queues.named(@@config["sqs"]["queue_name"])
-
-    queue.poll do |msg|
-      handle_message(msg.body)
-    end
+  case ARGV[0]
+  when "run"
+    ec2_runner = Daemons::EC2Runner.new(false)
+    ec2_runner.run()
   end
 end
-
-case ARGV[0]
-when "run"
-  ec2_runner = EC2Runner.new(false)
-  ec2_runner.run()
-end
-
 
 =begin
 {
