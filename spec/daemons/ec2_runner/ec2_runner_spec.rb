@@ -2,17 +2,17 @@ require 'spec_helper'
 require "#{Rails.root}/daemons/ec2_runner/ec2_runner"
 describe Daemons::EC2Runner do
   subject { Daemons::EC2Runner.new(true) }
-
-  let(:fog) { Fog::Computer.new(provider: 'AWS')}
+  let(:fog) { Fog::Compute.new(provider: 'AWS')}
   let(:test_hash){ 
     {
-      pantry_request_id: "-1",
+      pantry_request_id: "",
       instance_name: "sqs test",
       flavor: "t1.micro",
       ami: "ami-fedfd48a",
       team: "test team",
       subnet_id: "subnet-f3c63a98", 
-      security_group_ids: "sg-f94dc88e"
+      security_group_ids: "sg-f94dc88e",
+      ssh_key: '123456F'
     }
   }
   let(:good_msg) { test_hash.to_json }
@@ -26,15 +26,17 @@ describe Daemons::EC2Runner do
 
   describe "#boot_machine" do 
     it "Takes machine details and boots an ec2 instance" do 
-      expect( subject.boot_machine(
+      expect{subject.boot_machine(
         1,
         "test_name",
         "t1.micro",
         "ami-fedfd48a",
         "test_team",
         "subnet-f3c63a98",
-        "sg-f94dc88e" )
-      ).not_to be nil
+        "sg-f94dc88e" ); sleep(1)
+      }.to change{
+        fog.servers.count
+      }.by(1)
     end
   end
 

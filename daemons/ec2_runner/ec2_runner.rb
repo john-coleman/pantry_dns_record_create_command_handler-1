@@ -16,7 +16,7 @@ module Daemons
     def log_error(error)
       begin
         #If node id isn't returned in reasonable time assume !ec2 node
-        status = Timeout::timeout(2){
+        status = Timeout::timeout(1){
           instance_id = `wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`
         }
       rescue Timeout::Error
@@ -31,12 +31,10 @@ module Daemons
       puts error_msg
     end
 
-
     def machine_already_booted(request_id)
       ec2 = AWS::EC2.new
       ec2.instances.tagged('pantry_request_id').tagged_values("#{request_id}").any?
     end
-
 
     def boot_machine(pantry_request_id, instance_name, flavor, ami, team, subnet_id, security_group_ids)
       fog = Fog::Compute.new(
@@ -51,65 +49,82 @@ module Daemons
         :subnet_id => subnet_id,
         :security_group_ids => security_group_ids
       )
-      if !testing
-        fog.tags.create(
-          :resource_id => ec2_inst.identity,
-          :key => 'Name',
-          :value => instance_name
-        )
-       fog.tags.create(
-          :resource_id => ec2_inst.identity,
-          :key => 'team',
-          :value => team
-        )
-        fog.tags.create(
-          :resource_id => ec2_inst.identity,
-          :key => 'pantry_request_id',
-          :value => pantry_request_id
-        )
-        puts "#{ec2_inst.state}"
-        ec2_inst.wait_for { ready? }
-      end
+      fog.tags.create(
+        :resource_id => ec2_inst.identity,
+        :key => 'Name',
+        :value => instance_name
+      )
+     fog.tags.create(
+        :resource_id => ec2_inst.identity,
+        :key => 'team',
+        :value => team
+      )
+      fog.tags.create(
+        :resource_id => ec2_inst.identity,
+        :key => 'pantry_request_id',
+        :value => pantry_request_id
+      )
+      puts "#{ec2_inst.state}"
+      ec2_inst.wait_for { ready? }      
       previous_status = nil
-      while true do 
-        #Not a good idea to hammer AWS with requests.
-        sleep(Integer(@@config["aws_request_wait"]))
-        # Valid values: ok | impaired | initializing | insufficient-data | not-applicable
-        if !testing
-          instance_status = fog.describe_instance_status('InstanceId'=>ec2_inst.id).body["instanceStatusSet"][0]["instanceStatus"]["status"]
-        else
-          instance_status = "ok"   
-        end     
-        if instance_status != previous_status
-          puts "#{instance_status}"
-          previous_status = instance_status
-        end
+      begin
+        status = Timeout::timeout(300){
+          while true do 
+            #Not a good idea to hammer AWS with requests.
+            sleep(Integer(@@config["aws_request_wait"]))
+            # Valid values: ok | impaired | initializing | insufficient-data | not-applicable
+            if !testing
+              instance_status = fog.describe_instance_status('InstanceId'=>ec2_inst.id).body["instanceStatusSet"][0]["instanceStatus"]["status"]
+            else
+              instance_status = 'ok'
+            end
 
-        case instance_status
-          when "initializing"
-            #Continue
-          when "ok"
-            return ec2_inst.id
-          when "impaired"
-            log_error("AWS instance returned status: impaired")
-          when "insufficient-data"
-            log_error("AWS instance returned status: insufficient-data")
-          when "not-applicable"
-            log_error("AWS instance returned status: not-applicable")
-          else
-            log_error("Unexpected AWS status encountered: #{instance_status}")
-        end
+            if instance_status != previous_status
+              puts "#{instance_status}"
+              previous_status = instance_status
+            end
+
+            case instance_status
+              when "initializing"
+                #Continue
+              when "ok"
+                return ec2_inst.id
+              when "impaired"
+                log_error("AWS instance returned status: impaired")
+              when "insufficient-data"
+                log_error("AWS instance returned status: insufficient-data")
+              when "not-applicable"
+                log_error("AWS instance returned status: not-applicable")
+              else
+                log_error("Unexpected AWS status encountered: #{instance_status}")
+            end
+          end
+        }
+      rescue Timeout::Error 
+        log_error("Booting timed out")
       end
     end
 
-    def raise_machine_booted_event(request_id, instance_id)
+    def raise_machine_booted_event(request_id)
       sns = AWS::SNS.new()
       topic = sns.topics[@@config["sns"]["topic_arn"]]
       topic.publish "#{request_id}"
     end
 
+    def invalid_json?(json_)
+      JSON.parse(json_)
+      return false
+    rescue Exception => e
+      return e
+    end
+
     def handle_message(msg_body)
       begin
+        rc = invalid_json?(msg_body)
+        if rc
+          log_error(rc)
+          return false 
+        end
         msg_json = JSON.parse(msg_body)
         if !machine_already_booted(msg_json["pantry_request_id"])
           puts "Attempting to boot machine."
