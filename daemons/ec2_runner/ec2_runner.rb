@@ -4,18 +4,28 @@ require 'aws-sdk'
 require 'yaml'
 require 'json'
 require 'fog'
+require 'timeout'
 
 class EC2Runner < Struct.new(:testing)
-  cfile = YAML.load_file("daemon.yml")
+  cfile = YAML.load_file(File.join(File.dirname(__FILE__), "daemon.yml"))
   @@config = cfile["production"]
   AWS.config(@@config["aws"])
 
+  #Send error details along with node id to sns error topic
   def log_error(error)
-    #instance_id = `wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`
+    begin
+      #If node id isn't returned in reasonable time assume !ec2 node
+      status = Timeout::timeout(2){
+        instance_id = `wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`
+      }
+    rescue Timeout::Error
+      instance_id = "local"
+    end
     sns = AWS::SNS.new()
-    topic = sns.topics[@@conf["sns"]["error_arn"]]    
-    topic.publish "[##ERROR##] Node <insert id> in ec2_runner: #{error}"
-    puts "[##ERROR##] Node <insert id> in ec2_runner: #{error}"
+    topic = sns.topics[@@config["sns"]["error_arn"]]    
+    error_msg = "[##ERROR##] Node #{instance_id} in ec2_runner: #{error}"
+    topic.publish error_msg
+    puts error_msg
   end
 
 
@@ -25,17 +35,19 @@ class EC2Runner < Struct.new(:testing)
   end
 
 
-  def boot_machine(pantry_request_id, instance_name, flavor, ami, team)
-    if testing
-      Fog.mock!
-    end
+  def boot_machine(pantry_request_id, instance_name, flavor, ami, team, subnet_id, security_group_ids)
     fog = Fog::Compute.new(
       provider: 'AWS',
       aws_access_key_id: @@config["aws"]["aws_access_key_id"],
       aws_secret_access_key: @@config["aws"]["aws_secret_access_key"],
       region: @@config["aws"]["region"]
     )
-    ec2_inst = fog.servers.create(:image_id => ami,:flavor_id => flavor)
+    ec2_inst = fog.servers.create(
+      :image_id => ami,
+      :flavor_id => flavor,
+      :subnet_id => subnet_id,
+      :security_group_ids => security_group_ids
+    )
     if !testing
       fog.tags.create(
         :resource_id => ec2_inst.identity,
@@ -57,6 +69,7 @@ class EC2Runner < Struct.new(:testing)
     end
     previous_status = nil
     while true do 
+      #Not a good idea to hammer AWS with requests.
       sleep(Integer(@@config["aws_request_wait"]))
       # Valid values: ok | impaired | initializing | insufficient-data | not-applicable
       if !testing
@@ -71,7 +84,7 @@ class EC2Runner < Struct.new(:testing)
 
       case instance_status
         when "initializing"
-          #ignore
+          #Continue
         when "ok"
           return ec2_inst.id
         when "impaired"

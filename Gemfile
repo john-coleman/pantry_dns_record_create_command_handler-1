@@ -11,6 +11,7 @@ gem 'chef'
 gem 'em-winrm'
 gem 'daemons'
 gem 'fog'
+gem 'aws-sdk'
 
 gem 'sass-rails'
 gem 'coffee-rails'
