@@ -36,7 +36,7 @@ module Daemons
       ec2.instances.tagged('pantry_request_id').tagged_values("#{request_id}").any?
     end
 
-    def boot_machine(pantry_request_id, instance_name, flavor, ami, team, subnet_id, security_group_ids)
+    def boot_machine(pantry_request_id, instance_name, flavor, ami, team_id, subnet_id, security_group_ids)
       fog = Fog::Compute.new(
         provider: 'AWS',
         aws_access_key_id: @@config["aws"]["aws_access_key_id"],
@@ -56,8 +56,8 @@ module Daemons
       )
      fog.tags.create(
         :resource_id => ec2_inst.identity,
-        :key => 'team',
-        :value => team
+        :key => 'team_id',
+        :value => team_id
       )
       fog.tags.create(
         :resource_id => ec2_inst.identity,
@@ -70,10 +70,10 @@ module Daemons
       begin
         status = Timeout::timeout(300){
           while true do 
-            #Not a good idea to hammer AWS with requests.
-            sleep(Integer(@@config["aws_request_wait"]))
             # Valid values: ok | impaired | initializing | insufficient-data | not-applicable
             if !testing
+               #Not a good idea to hammer AWS with requests.
+              sleep(Integer(@@config["aws_request_wait"]))              
               instance_status = fog.describe_instance_status('InstanceId'=>ec2_inst.id).body["instanceStatusSet"][0]["instanceStatus"]["status"]
             else
               instance_status = 'ok'
@@ -133,7 +133,7 @@ module Daemons
             msg_json["instance_name"],
             msg_json["flavor"],
             msg_json["ami"],
-            msg_json["team"],
+            msg_json["team_id"],
             msg_json["subnet_id"],
             msg_json["security_group_ids"]
           )

@@ -9,14 +9,13 @@ describe Daemons::EC2Runner do
       instance_name: "sqs test",
       flavor: "t1.micro",
       ami: "ami-fedfd48a",
-      team: "test team",
+      team_id: "test team",
       subnet_id: "subnet-f3c63a98", 
       security_group_ids: "sg-f94dc88e",
       ssh_key: '123456F'
     }
   }
   let(:good_msg) { test_hash.to_json }
-  let(:bad_msg) { "lajdflajdsflslfdj" }
 
   describe "#machine_already_booted" do
     it "Takes a non existing machine ID and returns false" do 
@@ -33,20 +32,16 @@ describe Daemons::EC2Runner do
         "ami-fedfd48a",
         "test_team",
         "subnet-f3c63a98",
-        "sg-f94dc88e" ); sleep(1)
-      }.to change{
-        fog.servers.count
-      }.by(1)
+        "sg-f94dc88e" ); sleep(10)
+      }.not_to be false
     end
   end
 
   describe "#handle_message" do 
-    it "Receives an incorrect SQS message and errors" do 
-      subject.handle_message(bad_msg).should == false
-    end
-
     it "Receives a correct SQS message and boots a machine" do
-      subject.handle_message(good_msg).should == true
+      expect{
+        subject.handle_message(good_msg)
+      }.not_to be false    
     end
   end
 
