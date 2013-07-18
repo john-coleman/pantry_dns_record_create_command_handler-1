@@ -33,7 +33,12 @@ module Daemons
 
     def machine_already_booted(request_id)
       ec2 = AWS::EC2.new
-      ec2.instances.tagged('pantry_request_id').tagged_values("#{request_id}").any?
+      machine = ec2.instances.tagged('pantry_request_id').tagged_values("#{request_id}").first
+      if !machine.nil?
+        return machine.id
+      else
+        return false
+      end
     end
 
     def boot_machine(pantry_request_id, instance_name, flavor, ami, team_id, subnet_id, security_group_ids)
@@ -105,16 +110,14 @@ module Daemons
       end
     end
 
-    def raise_machine_booted_event(request_id)
+    def raise_machine_booted_event(request_id, instance_id)
       sns = AWS::SNS.new()
+      msg = {
+        request_id: request_id,
+        instance_id: instance_id
+      }.to_json
       topic = sns.topics[@@config["sns"]["topic_arn"]]
-      topic.publish "#{request_id}"
-    end
-
-    def pass_machine_details_to_bootstrap(msg)
-      sqs = AWS::SQS::Client.new()
-      #queue_url = sqs.get_queue_url(queue_name: "boot_ec2_instance")[:queue_url]
-      sqs.send_message(queue_url: queue_url, message_body: msg)
+      topic.publish msg
     end
 
     def invalid_json?(json_)
@@ -125,35 +128,38 @@ module Daemons
     end
 
     def handle_message(msg_body)
-      begin
-        rc = invalid_json?(msg_body)
-        if rc
-          log_error(rc)
-          return false 
-        end
-        msg_json = JSON.parse(msg_body)
-        if !machine_already_booted(msg_json["pantry_request_id"])
-          puts "Attempting to boot machine."
-          instance_id = boot_machine(
-            msg_json["pantry_request_id"],
-            msg_json["instance_name"],
-            msg_json["flavor"],
-            msg_json["ami"],
-            msg_json["team_id"],
-            msg_json["subnet_id"],
-            msg_json["security_group_ids"]
-          )
-        else
-          log_error("Requested existing machine (Pantry id: #{msg_json["pantry_request_id"]}). Booting not attempted.")
-        end
-        if !testing
-          raise_machine_booted_event(msg_json["pantry_request_id"])
-        end
-        return true      
-      rescue Exception => e
-        log_error(e)
-        return false
+      rc = invalid_json?(msg_body)
+      if rc
+        log_error(rc)
+        return false 
       end
+      msg_json = JSON.parse(msg_body)
+      existing_instance_id = machine_already_booted(msg_json["pantry_request_id"])
+      if !existing_instance_id
+        puts "Attempting to boot machine."
+        instance_id = boot_machine(
+          msg_json["pantry_request_id"],
+          msg_json["instance_name"],
+          msg_json["flavor"],
+          msg_json["ami"],
+          msg_json["team_id"],
+          msg_json["subnet_id"],
+          msg_json["security_group_ids"]
+        )
+      else
+        instance_id = existing_instance_id
+        log_error("Requested existing machine (Pantry id: #{msg_json["pantry_request_id"]}). Booting not attempted.")
+      end
+      if !testing
+        raise_machine_booted_event(
+          msg_json["pantry_request_id"],
+          instance_id
+        )
+      end
+      return true      
+    rescue Exception => e
+      log_error(e)
+      return false
     end
 
     def run
