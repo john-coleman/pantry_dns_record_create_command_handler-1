@@ -111,6 +111,12 @@ module Daemons
       topic.publish "#{request_id}"
     end
 
+    def pass_machine_details_to_bootstrap(msg)
+      sqs = AWS::SQS::Client.new()
+      #queue_url = sqs.get_queue_url(queue_name: "boot_ec2_instance")[:queue_url]
+      sqs.send_message(queue_url: queue_url, message_body: msg)
+    end
+
     def invalid_json?(json_)
       JSON.parse(json_)
       return false
