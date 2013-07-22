@@ -31,6 +31,16 @@ module Daemons
       puts error_msg
     end
 
+    def raise_request_failed_event(request_id, error)
+      sns = AWS::SNS.new()
+      msg = {
+        request_id: request_id,
+        error: error
+      }.to_json
+      topic = sns.topics[@@config["sns"]["request_failed_arn"]]
+      topic.publish msg
+    end      
+
     def machine_already_booted(request_id)
       ec2 = AWS::EC2.new
       machine = ec2.instances.tagged('pantry_request_id').tagged_values("#{request_id}").first
@@ -114,7 +124,7 @@ module Daemons
       sns = AWS::SNS.new()
       msg = {
         request_id: request_id,
-        instance_id: instance_id
+        instance_id: instance_id      
       }.to_json
       topic = sns.topics[@@config["sns"]["topic_arn"]]
       topic.publish msg
@@ -153,12 +163,13 @@ module Daemons
       if !testing
         raise_machine_booted_event(
           msg_json["pantry_request_id"],
-          instance_id
+          instance_id        
         )
       end
       return true      
     rescue Exception => e
       log_error(e)
+      raise_request_failed_event(msg_json["pantry_request_id"], e)
       return false
     end
 
