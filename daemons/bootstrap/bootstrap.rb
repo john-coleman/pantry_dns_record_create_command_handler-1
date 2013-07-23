@@ -1,9 +1,7 @@
 require_relative '../common/ssh_runner'
-<<<<<<< HEAD
 require_relative '../common/win_rm_runner'
 require_relative '../common/aws_resource'
 require_relative '../common/publisher'
-require_relative '../common/config'
 
 module Daemons
   class Bootstrap
@@ -21,7 +19,7 @@ module Daemons
       runner.add_host machine_address
       runner.run_commands "chef-client"
 
-      @publisher.publish(Daemons.config['sns']['bootstrap_ec2_instance'], message)
+      @publisher.publish(message)
     end
 
     def valid_message?(message)
@@ -36,14 +34,6 @@ module Daemons
 
       true
     end
-=======
-require_relative '../common/winrm_runner'
-require_relative '../common/aws_resource'
-
-module Daemons
-  class Bootstrap
-
->>>>>>> e6074592c76edd4440b86637ff5499bb33334c01
   end
 end
 
