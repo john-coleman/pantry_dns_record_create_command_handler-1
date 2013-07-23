@@ -13,6 +13,7 @@ development:
     ec2_queue_bootstraped: ec2_instance_bootstraped
   sns:
     topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
+    bootstrap: arn:aws:sns:eu-west-1:001100110011:bootstrap_ec2_instance
     error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
   aws_request_wait: 1
 test:
@@ -29,6 +30,7 @@ test:
     booted_ec2_queue: ec2_instance_booted
   sns:
     topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
+    bootstrap: arn:aws:sns:eu-west-1:001100110011:bootstrap_ec2_instance
     error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
   aws_request_wait: 1
 production:
@@ -45,5 +47,6 @@ production:
     booted_ec2_queue: ec2_instance_booted
   sns:
     topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
+    bootstrap: arn:aws:sns:eu-west-1:001100110011:bootstrap_ec2_instance
     error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
   aws_request_wait: 1
