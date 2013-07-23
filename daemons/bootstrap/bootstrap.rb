@@ -1,4 +1,5 @@
 require_relative '../common/ssh_runner'
+<<<<<<< HEAD
 require_relative '../common/win_rm_runner'
 require_relative '../common/aws_resource'
 require_relative '../common/publisher'
@@ -35,6 +36,14 @@ module Daemons
 
       true
     end
+=======
+require_relative '../common/winrm_runner'
+require_relative '../common/aws_resource'
+
+module Daemons
+  class Bootstrap
+
+>>>>>>> e6074592c76edd4440b86637ff5499bb33334c01
   end
 end
 

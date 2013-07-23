@@ -12,6 +12,7 @@ gem 'em-winrm'
 gem 'daemons'
 gem 'fog'
 gem 'aws-sdk'
+gem 'rest-client'
 
 gem 'sass-rails'
 gem 'coffee-rails'

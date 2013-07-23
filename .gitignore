@@ -13,8 +13,11 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore configuration files
 /config/database.yml
 /daemons/daemon.yml
+/daemons/*/daemon.yml
 
 # Ignore aptana project config
 /.project
