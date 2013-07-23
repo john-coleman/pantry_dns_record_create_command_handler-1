@@ -1,5 +1,6 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
+ENV["environment"] ||= 'test'
 require 'simplecov'
 require 'simplecov-rcov'
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
@@ -20,6 +21,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 Chef::Config[:chef_server_url] = 'http://127.0.0.1:8889'
 RSpec.configure do |config|
+  config.include(RSpec::Fire)
   config.use_transactional_fixtures = true
 
   # If true, the base class of anonymous controllers will be inferred
