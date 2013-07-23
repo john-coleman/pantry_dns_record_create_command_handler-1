@@ -1,0 +1,51 @@
+development:
+  aws:
+    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
+    aws_secret_access_key: your_secret_access_key
+    region: eu-west-1
+  fog:
+    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
+    aws_secret_access_key: your_secret_access_key
+    region: eu-west-1
+  sqs:
+    boot_ec2_queue: boot_ec2_instance
+    booted_ec2_queue: ec2_instance_booted
+  sns:
+    topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
+    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
+  aws_request_wait: 1
+  instance_id_url: http://169.254.169.254/latest/meta-data/instance-id
+test:
+  aws:
+    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
+    aws_secret_access_key: your_secret_access_key
+    region: eu-west-1
+  fog:
+    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
+    aws_secret_access_key: your_secret_access_key
+    region: eu-west-1
+  sqs:
+    boot_ec2_queue: boot_ec2_instance
+    booted_ec2_queue: ec2_instance_booted
+  sns:
+    topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
+    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
+  aws_request_wait: 1
+  instance_id_url: http://169.254.169.254/latest/meta-data/instance-id
+production:
+  aws:
+    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
+    aws_secret_access_key: your_secret_access_key
+    region: eu-west-1
+  fog:
+    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
+    aws_secret_access_key: your_secret_access_key
+    region: eu-west-1
+  sqs:
+    boot_ec2_queue: boot_ec2_instance
+    booted_ec2_queue: ec2_instance_booted
+  sns:
+    topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
+    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
+  aws_request_wait: 1
+  instance_id_url: http://169.254.169.254/latest/meta-data/instance-id
