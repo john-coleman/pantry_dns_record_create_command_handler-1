@@ -14,7 +14,7 @@ shared_examples "bootstrap with runner" do
 
   it "publishes success message" do
     subject.handle_message message
-    expect(publisher).to have_received(:publish)
+    expect(publisher).to have_received(:publish).with(message)
   end
 end
 
