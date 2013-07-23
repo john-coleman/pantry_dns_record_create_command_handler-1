@@ -392,6 +392,7 @@ DEPENDENCIES
   pry-debugger
   pry-rails
   rails (= 3.2.13)
+  rest-client
   rspec-rails
   sass-rails
   simplecov
