@@ -1,10 +1,10 @@
-#!/usr/bin/en ruby
+#!/usr/bin/env ruby
 
 require_relative '../common/subscriber'
 require_relative '../common/config'
-require_relative 'ec2_booted'
+require_relative 'ec2_runner'
 
-config = Daemons::Config.instance
+config = Daemons.config
 config.configure_aws
 sqs_poller = Daemons::Subscriber.new()
 
