@@ -3,7 +3,7 @@ require_relative '../common/subscriber'
 require_relative '../common/config'
 require_relative 'ec2_booted'
 
-config = Daemons::Config.instance
+config = Daemons.config
 config.configure_aws
 sqs_poller = Daemons::Subscriber.new()
 case ARGV[0]
