@@ -1,8 +1,11 @@
 require 'spec_helper'
 require "#{Rails.root}/daemons/ec2_runner/ec2_runner"
+
 describe Daemons::EC2Runner do
-  subject { Daemons::EC2Runner.new(true) }
-  let(:fog) { Fog::Compute.new(provider: 'AWS')}
+  let(:ec2) { AWS::EC2.new }
+  let(:publisher) { instance_double('Publisher').as_null_object }
+  let(:raise_msg) { {request_id: 1, instance_id: 2} }
+  subject { Daemons::EC2Runner.new(ec2, publisher) }
   let(:test_hash){ 
     {
       pantry_request_id: "",
@@ -15,11 +18,18 @@ describe Daemons::EC2Runner do
       ssh_key: '123456F'
     }
   }
-  let(:good_msg) { test_hash.to_json }
+  let(:good_msg){ test_hash.to_json }
 
   describe "#machine_already_booted" do
     it "Takes a non existing machine ID and returns false" do 
       expect(subject.machine_already_booted(-1)).to be false
+    end
+  end
+
+  describe "#raise_machine_booted_event" do 
+    it "Takes two ids and pokes SQS" do 
+      subject.raise_machine_booted_event(1, 2)
+      expect(publisher).to have_received(:publish)
     end
   end
 
@@ -39,9 +49,8 @@ describe Daemons::EC2Runner do
 
   describe "#handle_message" do 
     it "Receives a correct SQS message and boots a machine" do
-      expect{
-        subject.handle_message(good_msg)
-      }.not_to be false    
+      subject.handle_message(good_msg)
+      expect(publisher).to have_received(:publish)
     end
   end
 
