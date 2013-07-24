@@ -3,19 +3,12 @@
     access_key_id:<%= @aws_access_key_id %>
     secret_access_key:<%= @aws_secret_access_key %>
     region: <%= @aws_region %>
-  fog:
-    aws_access_key_id:<%= @aws_access_key_id %>
-    aws_secret_access_key:<%= @aws_secret_access_key %>
-    region: <%= @aws_region %>
   pantry:
     api_key: <%= @pantry_api_key %>
     request_timeout: <%= @pantry_request_timeout %>
     url: <%= @pantry_url %>
   sqs:
-    boot_ec2_queue: <%= @boot_ec2_queue %>
-    booted_ec2_queue: <%= @booted_ec2_queue %>
+    queue_name: <%= @queue_name %>
   sns:
-    boot_ec2_topic_arn: <% @boot_ec2_topic_arn %>
+    topic_arn: <% @topic_arn %>
     error_arn: <%= @error_arn %>
-  aws_request_wait: <% aws_request_wait %>
-  instance_id_url: <% @instance_id_url %>
