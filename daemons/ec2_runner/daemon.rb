@@ -12,13 +12,13 @@ ec2 = AWS::EC2.new
 
 case ARGV[0]
 when 'run' 
-  #begin
+  begin
     sqs_poller.subscribe(
       config['sqs']['boot_ec2_queue'],
       Daemons::EC2Runner.new(ec2, publisher)
     )
-  #rescue => e 
-  #  puts "#{e}"
-  #  retry
-  #end
+  rescue => e 
+    puts "#{e}"
+    retry
+  end
 end

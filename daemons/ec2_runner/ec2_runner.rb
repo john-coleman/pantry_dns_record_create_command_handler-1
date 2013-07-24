@@ -89,7 +89,7 @@ module Daemons
           end
 
           if instance_status != previous_status
-            print "instance status: #{instance_status}"
+            puts "instance status: #{instance_status}"
             previous_status = instance_status
           end
 
