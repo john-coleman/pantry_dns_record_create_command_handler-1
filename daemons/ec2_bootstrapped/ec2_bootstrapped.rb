@@ -18,8 +18,9 @@ module Daemons
       request_url = "#{url}/aws/ec2_instances/#{request_id}"
       update = ({:bootstrapped => true}).to_json
       puts "#{update}"
+      puts request_url
       Timeout::timeout(@config['pantry']['timeout']){
-        RestClient.put request_url, update, {:content_type => :json, :'x-auth-token' => @config['pantry']['api_key'] }
+        RestClient.put request_url, update, {:content_type => :json, :'x-auth-token' => "2" }
       }
     end
 
