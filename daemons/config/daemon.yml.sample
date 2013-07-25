@@ -1,51 +1,42 @@
 development:
   aws:
-    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
-    aws_secret_access_key: your_secret_access_key
+    access_key_id: some_aws_iam_access_key_id
+    secret_access_key: some_aws_iam_secret_access_key
     region: eu-west-1
-  fog:
-    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
-    aws_secret_access_key: your_secret_access_key
-    region: eu-west-1
+  pantry:
+    api_key: some_pantry_api_key
+    request_timeout: 10
+    url: http://some.pantry.fqdn
   sqs:
-    boot_ec2_queue: boot_ec2_instance
-    booted_ec2_queue: ec2_instance_booted
+    queue_name: daemon_specific_queue
   sns:
-    topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
-    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
-  aws_request_wait: 1
-  instance_id_url: http://169.254.169.254/latest/meta-data/instance-id
+    topic_arn: daemon_specific_topic_arn
+    error_arn: daemon_specific_error_arn
 test:
   aws:
-    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
-    aws_secret_access_key: your_secret_access_key
+    access_key_id: some_aws_iam_access_key_id
+    secret_access_key: some_aws_iam_secret_access_key
     region: eu-west-1
-  fog:
-    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
-    aws_secret_access_key: your_secret_access_key
-    region: eu-west-1
+  pantry:
+    api_key: some_pantry_api_key
+    request_timeout: 10
+    url: http://some.pantry.fqdn
   sqs:
-    boot_ec2_queue: boot_ec2_instance
-    booted_ec2_queue: ec2_instance_booted
+    queue_name: daemon_specific_queue
   sns:
-    topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
-    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
-  aws_request_wait: 1
-  instance_id_url: http://169.254.169.254/latest/meta-data/instance-id
+    topic_arn: daemon_specific_topic_arn
+    error_arn: daemon_specific_error_arn
 production:
   aws:
-    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
-    aws_secret_access_key: your_secret_access_key
+    access_key_id: some_aws_iam_access_key_id
+    secret_access_key: some_aws_iam_secret_access_key
     region: eu-west-1
-  fog:
-    aws_access_key_id: AKIEXAMPLEACCESSKEYZ  
-    aws_secret_access_key: your_secret_access_key
-    region: eu-west-1
+  pantry:
+    api_key: some_pantry_api_key
+    request_timeout: 10
+    url: http://some.pantry.fqdn
   sqs:
-    boot_ec2_queue: boot_ec2_instance
-    booted_ec2_queue: ec2_instance_booted
+    queue_name: daemon_specific_queue
   sns:
-    topic_arn: arn:aws:sns:eu-west-1:001100110011:boot_ec2_instance
-    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
-  aws_request_wait: 1
-  instance_id_url: http://169.254.169.254/latest/meta-data/instance-id
+    topic_arn: daemon_specific_topic_arn
+    error_arn: daemon_specific_error_arn
