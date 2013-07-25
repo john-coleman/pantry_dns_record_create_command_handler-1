@@ -1,7 +1,7 @@
 require 'spec_helper'
-require "#{Rails.root}/daemons/ec2_bootstrapped/ec2_bootstrapped"
-describe Daemons::EC2Bootstrapped do
-  subject { Daemons::EC2Bootstrapped.new() }
+require "#{Rails.root}/daemons/ec2_bootstrapped_event_handler/ec2_bootstrapped_event_handler"
+describe Daemons::EC2BootstrappedEventHandler do
+  subject { Daemons::EC2BootstrappedEventHandler.new() }
 
   let(:good_message_hash) {
     {
