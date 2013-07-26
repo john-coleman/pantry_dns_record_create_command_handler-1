@@ -53,18 +53,22 @@ module Daemons
     end
 
     def boot_machine(request_id, instance_name, flavor, ami, team_id, subnet_id, secgroup_ids)
-      begin
-        instance = @ec2.instances.create(
-          image_id:             ami,
-          instance_type:        flavor,
-          count:                1,
-          security_group_ids:   [secgroup_ids],
-          subnet:               subnet_id,
-        )
-      rescue => e 
-        puts "Creating instance failed"
-        return false
-      end
+      instance = create_instance(ami, flavor, secgroup_ids, subnet_id)
+      tag_and_wait_instance(instance, request_id, instance_name, team_id)
+    end
+
+    def create_instance(ami, flavor, secgroup_ids, subnet_id)
+      instance = @ec2.instances.create(
+        image_id:             ami,
+        instance_type:        flavor,
+        count:                1,
+        security_group_ids:   [secgroup_ids],
+        subnet:               subnet_id,
+      )
+      return instance
+    end
+
+    def tag_and_wait_instance(instance, request_id, instance_name, team_id)
       @ec2.client.create_tags(
         resources: [instance.id],
         tags: 
@@ -74,7 +78,7 @@ module Daemons
           { key: "pantry_request_id", value: "#{request_id}"}
         ]
       )
-      puts "instance status: pending"
+      print "\ninstance status: pending"
       previous_status = nil
       status = Timeout::timeout(300){
         while true do 
@@ -85,11 +89,12 @@ module Daemons
             instance_status = response.data[:instance_status_set][0][:instance_status][:status]
           rescue
             sleep(1)
+            print "."
             retry
           end
 
           if instance_status != previous_status
-            puts "instance status: #{instance_status}"
+            print "\ninstance status: #{instance_status}"
             previous_status = instance_status
           end
 
