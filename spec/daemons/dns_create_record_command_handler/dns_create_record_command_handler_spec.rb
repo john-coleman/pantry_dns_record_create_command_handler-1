@@ -9,8 +9,7 @@ describe Daemons::DnsCreateRecordCommandHandler do
       "Message"=>{
         "request_id"=>1,
         "instance_id"=>"i-f4819cb9",
-        "record_type"=>"A",
-        "hostname"=>"some_hostname",
+        "instance_name"=>"some_hostname",
         "domain"=>"some_domain"
       }
     }
