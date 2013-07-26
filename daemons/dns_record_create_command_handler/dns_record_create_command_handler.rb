@@ -3,7 +3,7 @@ require_relative '../common/aws_resource'
 require_relative '../common/publisher'
 
 module Daemons
-  class DnsCreateRecordCommandHandler
+  class DnsRecordCreateCommandHandler
     def initialize(publisher = Publisher.new)
       @publisher = publisher
     end
@@ -18,8 +18,7 @@ module Daemons
       runner.add_host machine_address
       
       soa_hash =  runner.run_commands "nslookup -type=soa #{domain}| find \"internet address\""
-      soa_hash[:out] = soa_hash[:out].gsub(/\s+/, ' ').strip
-      soa_server = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.match(soa_hash[:out])
+      soa_server = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.match(soa_hash[:out].gsub(/\s+/, ' ').strip)
       
       runner.run_commands "dnscmd #{soa_server} /RecordAdd #{domain} #{hostname} /CreatePTR A #{ec2_instance.private_ip_address}"
       

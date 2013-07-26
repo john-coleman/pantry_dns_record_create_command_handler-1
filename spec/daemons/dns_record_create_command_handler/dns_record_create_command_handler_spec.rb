@@ -1,8 +1,8 @@
 require 'spec_helper'
-require "#{Rails.root}/daemons/dns_create_record_command_handler/dns_create_record_command_handler"
+require "#{Rails.root}/daemons/dns_record_create_command_handler/dns_record_create_command_handler"
 
-describe Daemons::DnsCreateRecordCommandHandler do
-  subject { Daemons::DnsCreateRecordCommandHandler.new() }
+describe Daemons::DnsRecordCreateCommandHandler do
+  subject { Daemons::DnsRecordCreateCommandHandler.new() }
 
   let(:good_message_hash) {
     {
