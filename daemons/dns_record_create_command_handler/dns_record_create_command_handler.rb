@@ -20,7 +20,7 @@ module Daemons
       soa_hash =  runner.run_commands "nslookup -type=soa #{domain}| find \"internet address\""
       soa_server = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.match(soa_hash[:out].gsub(/\s+/, ' ').strip)
       
-      runner.run_commands "dnscmd #{soa_server} /RecordAdd #{domain} #{hostname} /CreatePTR A #{ec2_instance.private_ip_address}"
+      dns_record_hash = runner.run_commands "dnscmd #{soa_server} /RecordAdd #{domain} #{hostname} /CreatePTR A #{ec2_instance.private_ip_address}"
       
       @publisher.publish(message)
     end
