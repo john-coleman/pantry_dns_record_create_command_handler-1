@@ -12,8 +12,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'chef_zero/server'
 @@server = ChefZero::Server.new
-Fog.credential = :non_default 
-Fog.mock!
+
 AWS.stub!
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

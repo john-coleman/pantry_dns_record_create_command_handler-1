@@ -7,7 +7,8 @@ gem 'omniauth-ldap'
 
 gem 'strong_parameters'
 gem 'haml-rails'
-gem 'chef'
+gem "chef", "~> 11.6.0"
+gem "knife-windows", "~> 0.5.12"
 gem 'em-winrm'
 gem 'daemons'
 gem 'fog'
