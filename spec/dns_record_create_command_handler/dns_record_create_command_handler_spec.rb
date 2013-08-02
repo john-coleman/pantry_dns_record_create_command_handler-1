@@ -1,5 +1,5 @@
 require 'spec_helper'
-require "#{Rails.root}/daemons/dns_record_create_command_handler/dns_record_create_command_handler"
+require_relative "../../dns_record_create_command_handler/dns_record_create_command_handler"
 
 describe Daemons::DnsRecordCreateCommandHandler do
   subject { Daemons::DnsRecordCreateCommandHandler.new() }
