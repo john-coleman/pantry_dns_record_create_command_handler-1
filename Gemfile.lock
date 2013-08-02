@@ -1,3 +1,13 @@
+GIT
+  remote: git@github.com:wongatech/pantry_daemon_common.git
+  revision: 05afbc7c00878ef93324ff598a3334ee1645e716
+  specs:
+    pantry_daemon_common (0.0.2)
+      aws-sdk
+      em-winrm
+      net-ssh
+      net-ssh-multi
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -59,6 +69,12 @@ GEM
     method_source (0.8.1)
     mixlib-log (1.6.0)
     multi_json (1.7.7)
+    net-ssh (2.6.8)
+    net-ssh-gateway (1.2.0)
+      net-ssh (>= 2.6.5)
+    net-ssh-multi (1.2.0)
+      net-ssh (>= 2.6.5)
+      net-ssh-gateway (>= 1.2.0)
     nokogiri (1.5.10)
     nokogiri (1.5.10-x86-mingw32)
     nori (1.1.5)
@@ -128,9 +144,9 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk
   daemons
-  em-winrm
   guard-bundler
   guard-rspec
+  pantry_daemon_common!
   pry-debugger
   rake
   rspec

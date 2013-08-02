@@ -1,6 +1,6 @@
-require_relative '../common/win_rm_runner'
-require_relative '../common/aws_resource'
-require_relative '../common/publisher'
+require 'common/win_rm_runner'
+require 'common/aws_resource'
+require 'common/publisher'
 
 module Daemons
   class DnsRecordCreateCommandHandler

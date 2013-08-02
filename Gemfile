@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'em-winrm'
 gem 'pantry_daemon_common', git: 'git@github.com:wongatech/pantry_daemon_common.git'
 gem 'daemons'
 gem 'aws-sdk'
