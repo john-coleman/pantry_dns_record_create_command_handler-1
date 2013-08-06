@@ -8,6 +8,17 @@ GIT
       net-ssh
       net-ssh-multi
 
+GIT
+  remote: https://github.com/pmorton/em-winrm.git
+  revision: ab9c0a19fcf64c0de2720ac81fc03d27f381de47
+  branch: new-eventmachine
+  specs:
+    em-winrm (0.5.4)
+      eventmachine (~> 1.0.0)
+      mixlib-log (>= 1.3.0)
+      uuidtools (~> 2.1.1)
+      winrm (~> 1.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -18,7 +29,7 @@ GEM
       json (~> 1.4)
       nokogiri (< 1.6.0)
       uuidtools (~> 2.1)
-    builder (3.0.4)
+    builder (3.2.2)
     coderay (1.0.9)
     columnize (0.3.6)
     daemons (1.1.9)
@@ -29,13 +40,8 @@ GEM
     debugger-linecache (1.2.0)
     debugger-ruby_core_source (1.2.2)
     diff-lcs (1.2.4)
-    em-winrm (0.5.4)
-      eventmachine (= 1.0.0.beta.3)
-      mixlib-log (>= 1.3.0)
-      uuidtools (~> 2.1.1)
-      winrm (~> 1.1.0)
-    eventmachine (1.0.0.beta.3)
-    eventmachine (1.0.0.beta.3-x86-mingw32)
+    eventmachine (1.0.3)
+    eventmachine (1.0.3-x86-mingw32)
     ffi (1.8.1)
     ffi (1.8.1-x86-mingw32)
     formatador (0.2.4)
@@ -52,7 +58,7 @@ GEM
       guard (~> 1.1)
     guard-rspec (1.2.1)
       guard (>= 1.1)
-    gyoku (1.0.0)
+    gyoku (1.1.0)
       builder (>= 2.1.2)
     httpclient (2.2.0.2)
     httpi (0.9.7)
@@ -90,7 +96,7 @@ GEM
     pry-debugger (0.2.2)
       debugger (~> 1.3)
       pry (~> 0.9.10)
-    rack (1.4.5)
+    rack (1.5.2)
     rake (10.1.0)
     rb-fsevent (0.9.3)
     rb-inotify (0.9.0)
@@ -144,6 +150,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk
   daemons
+  em-winrm!
   guard-bundler
   guard-rspec
   pantry_daemon_common!
