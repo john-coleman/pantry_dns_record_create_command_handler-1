@@ -6,7 +6,7 @@ require 'common/config'
 require_relative 'dns_record_create_command_handler/dns_record_create_command_handler'
 
 THIS_FILE = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
-config = Daemons::Config.new(File.expand_path(File.join(File.dirname(THIS_FILE),"daemon.yml")))
+config = Daemons::Config.new(File.expand_path(File.join(File.dirname(THIS_FILE),"config","daemon.yml")))
 daemon_config = {
   :backtrace => config['daemon']['backtrace'],
   :dir_mode => config['daemon']['dir_mode'].to_sym,
