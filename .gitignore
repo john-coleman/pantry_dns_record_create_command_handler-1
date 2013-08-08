@@ -30,3 +30,4 @@
 *.pem
 .DS_Store
 /.*cache
+*.swp
