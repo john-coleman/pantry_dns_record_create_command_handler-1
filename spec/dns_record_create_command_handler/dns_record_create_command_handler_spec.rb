@@ -1,9 +1,9 @@
 require 'spec_helper'
 require_relative "../../dns_record_create_command_handler/dns_record_create_command_handler"
 
-describe Daemons::DnsRecordCreateCommandHandler do
-  subject { Daemons::DnsRecordCreateCommandHandler.new() }
-
+describe Wonga::Daemon::DnsRecordCreateCommandHandler do
+  let(:logger) { instance_double('Logger').as_null_object }
+  subject(:dnsrecord) { Wonga::Daemon::DnsRecordCreateCommandHandler.new(publisher, logger) }
   let(:good_message_hash) {
     {
       "Message"=>{
@@ -24,3 +24,4 @@ describe Daemons::DnsRecordCreateCommandHandler do
   end
   
 end
+
