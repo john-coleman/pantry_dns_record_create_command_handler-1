@@ -16,9 +16,7 @@
 
 # Ignore configuration files
 /config/database.yml
-/*/daemons.yml
-/daemons/daemon.yml
-/daemons/*/daemon.yml
+/*/daemon.yml
 
 # Ignore aptana project config
 /.project
