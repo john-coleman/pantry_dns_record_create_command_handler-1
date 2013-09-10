@@ -1,5 +1,14 @@
+unless ENV["SKIP_COV"]
+  require 'simplecov'
+  require 'simplecov-rcov'
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::RcovFormatter
+  ]
+end
 require 'rspec/fire'
 require 'aws-sdk'
+require 'spec_support/shared_daemons'
 
 AWS.config :access_key_id=>"test", :secret_access_key=>"test"
 AWS.stub!
