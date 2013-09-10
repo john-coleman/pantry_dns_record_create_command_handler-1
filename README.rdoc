@@ -1,5 +1,12 @@
 == Pantry DNS Record Create Comamnd Handler
 
+Resolves the NS records for the specified domain
+Connects to the Active Directory Name Server over WinRM
+Executes `dnscmd` commands to create DNS records
+
+Due to WinRM 2.0 basic auth restrictions, the user specified in the daemon.yml config must be in the same domain as the domain controller.
+Please ensure that WinRM is configured to allow unencrypted basic authentication.
+
 1. Copy and modify config/database.yml.sample to config/database.yml
 2. `bundle install`
 3. `bundle exec ruby ./daemon.rb run`
