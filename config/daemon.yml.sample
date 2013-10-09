@@ -13,6 +13,7 @@ development:
       log_file: /tmp/some_log_file.log
       shift_age: 1
     monitor: false
+    name_server: ns.example.com
   pantry:
     api_key: some_pantry_api_key
     request_timeout: 10
@@ -36,6 +37,7 @@ test:
     dir_mode: system
     dir: /var/run
     monitor: true
+    name_server: ns.example.com
   pantry:
     api_key: some_pantry_api_key
     request_timeout: 10
@@ -59,6 +61,7 @@ production:
     dir_mode: system 
     dir: /var/run
     monitor: true
+    name_server: ns.example.com
   pantry:
     api_key: some_pantry_api_key
     request_timeout: 10
