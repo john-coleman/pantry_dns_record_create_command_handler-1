@@ -2,6 +2,13 @@ require 'spec_helper'
 require_relative "../../dns_record_create_command_handler/dns_record_create_command_handler"
 
 describe Wonga::Daemon::DnsRecordCreateCommandHandler do
+  let(:config) {
+    {
+      "daemon" => {
+        "name_server" => "some.name.server"
+      }
+    }
+  }
   let(:private_ip) { "10.1.1.100" }
   let(:message) {
     {
@@ -16,7 +23,7 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
   let(:ad_username) { "dns_admin" }
   let(:ad_password) { "dns_password" }
 
-  subject { described_class.new(ad_username, ad_password, double.as_null_object, double.as_null_object) }
+  subject { described_class.new(ad_username, ad_password, double.as_null_object, double.as_null_object, config) }
 
   it_behaves_like "handler"
 
@@ -32,7 +39,7 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
 
     it "gets name server" do
       subject.handle_message(message)
-      expect(subject).to have_received(:get_name_server).with(message['domain'])
+      expect(subject).to have_received(:get_name_server).with(config['daemon']['name_server'], message['domain'])
     end
 
     it "creates an A record" do
@@ -50,7 +57,7 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
     end
 
     it "discovers the domain's name server" do
-      subject.get_name_server(message['domain'])
+      subject.get_name_server(config['daemon']['name_server'], message['domain'])
       expect(resolver).to have_received(:getresource).with(message['domain'], Resolv::DNS::Resource::IN::NS)
     end
   end
