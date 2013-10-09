@@ -25,9 +25,11 @@ module Wonga
       end
 
       def get_name_server(name_server, domain)
-        unless name_server && name_server.empty?
+        if name_server.nil? || name_server.empty?
           resolver = Resolv::DNS.new()
           resolver.getresource(domain, Resolv::DNS::Resource::IN::NS).name
+        else
+          name_server
         end
       end
 
