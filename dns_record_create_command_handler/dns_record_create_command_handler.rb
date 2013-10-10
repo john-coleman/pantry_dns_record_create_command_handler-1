@@ -37,11 +37,25 @@ module Wonga
         runner = WinRMRunner.new
         @logger.info "Connecting to Name Server over WinRM"
         runner.add_host(name_server, ad_username, ad_password)
+        
+        if check_ip("#{hostname}.#{domain}")
+          command = "dnscmd #{name_server} /recorddelete #{domain} #{hostname}.#{domain}. A /f"
+          @logger.info "Executing: #{command}"
+          runner.run_commands command
+        end
+        
         command = "dnscmd #{name_server} /RecordAdd #{domain} #{hostname} /CreatePTR A #{private_ip}"
         @logger.info "Executing: #{command}"
-        runner.run_commands command 
+        runner.run_commands command
       end
-
+      
+      def check_ip(name)
+        begin
+          Resolv.getaddress(name)
+        rescue Resolv::ResolvError => e
+          nil
+        end
+      end
     end
   end
 end

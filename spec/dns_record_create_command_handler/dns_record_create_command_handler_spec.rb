@@ -87,5 +87,15 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
       expect(win_rm_runner).to have_received(:run_commands).with("dnscmd #{name_server} /RecordAdd #{message['domain']} #{message['instance_name']} /CreatePTR A #{private_ip}")
     end
   end
+  
+  describe "check_ip" do
+    it "returns an IP" do
+      subject.check_ip("www.ruby-lang.org").should =~ /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/
+    end
+    
+    it "returns nil if the name does not exists" do
+      subject.check_ip("www11111111111.ruby-lang.org").should be_nil
+    end
+  end
 end
 
