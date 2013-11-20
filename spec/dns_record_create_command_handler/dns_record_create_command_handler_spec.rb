@@ -51,21 +51,23 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
 
   describe "#get_name_server" do
     let(:resolver) { instance_double("Resolv::DNS").as_null_object }
+    let(:name_server_resource) { instance_double("Resolv::DNS::Resource::IN::A", address: name_server).as_null_object }
 
     before(:each) do
+      Resolv::DNS::Resource::IN::A.stub(:new)
       Resolv::DNS.stub(:new).and_return(resolver)
-      Resolv::DNS.stub(:getresource).and_return(name_server)
+      resolver.stub(:getresource).and_return(name_server_resource)
     end
 
     context "name_server specified in config" do
-    it "discovers the domain's name server" do
+    it "returns the specified name server" do
       expect(subject.get_name_server(config['daemon']['name_server'], message['domain'])).to be_eql (config['daemon']['name_server'])
     end
     end
     context "name_server not specified in config" do
     it "discovers the domain's name server" do
-      subject.get_name_server(config['daemon']['no_name_server'], message['domain'])
-      expect(resolver).to have_received(:getresource).with(message['domain'], Resolv::DNS::Resource::IN::NS)
+      expect(subject.get_name_server(config['daemon']['no_name_server'], message['domain'])).to be_eql (name_server)
+      expect(resolver).to have_received(:getresource).with(message['domain'], Resolv::DNS::Resource::IN::A)
     end
     end
   end
