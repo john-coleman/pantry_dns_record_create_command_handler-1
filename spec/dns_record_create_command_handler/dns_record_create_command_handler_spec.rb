@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../../dns_record_create_command_handler/dns_record_create_command_handler'
 
-describe Wonga::Daemon::DnsRecordCreateCommandHandler do
+RSpec.describe Wonga::Daemon::DnsRecordCreateCommandHandler do
   let(:config) do
     {
       'daemon' => {
@@ -36,9 +36,9 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
     let(:aws_resource) { instance_double('Wonga::Daemon::AWSResource', find_server_by_id: instance) }
 
     before(:each) do
-      Wonga::Daemon::AWSResource.stub(:new).and_return(aws_resource)
-      subject.stub(:get_name_server).and_return(name_server)
-      subject.stub(:create_a_record)
+      allow(Wonga::Daemon::AWSResource).to receive(:new).and_return(aws_resource)
+      allow(subject).to receive(:get_name_server).and_return(name_server)
+      allow(subject).to receive(:create_a_record)
     end
 
     it 'gets name server' do
@@ -57,9 +57,9 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
     let(:aws_resource) { instance_double('Wonga::Daemon::AWSResource', find_server_by_id: instance) }
 
     before(:each) do
-      Wonga::Daemon::AWSResource.stub(:new).and_return(aws_resource)
-      subject.stub(:get_name_server).and_return(name_server)
-      subject.stub(:create_a_record)
+      allow(Wonga::Daemon::AWSResource).to receive(:new).and_return(aws_resource)
+      allow(subject).to receive(:get_name_server).and_return(name_server)
+      allow(subject).to receive(:create_a_record)
     end
 
     it 'does not get name server' do
@@ -88,9 +88,9 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
     let(:name_server_resource) { instance_double('Resolv::DNS::Resource::IN::A', address: name_server).as_null_object }
 
     before(:each) do
-      Resolv::DNS::Resource::IN::A.stub(:new)
-      Resolv::DNS.stub(:new).and_return(resolver)
-      resolver.stub(:getresource).and_return(name_server_resource)
+      allow(Resolv::DNS::Resource::IN::A).to receive(:new)
+      allow(Resolv::DNS).to receive(:new).and_return(resolver)
+      allow(resolver).to receive(:getresource).and_return(name_server_resource)
     end
 
     context 'name_server specified in config' do
@@ -110,7 +110,7 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
     let(:win_rm_runner) { instance_double('Wonga::Daemon::WinRMRunner').as_null_object }
 
     before(:each) do
-      Wonga::Daemon::WinRMRunner.stub(:new).and_return(win_rm_runner)
+      allow(Wonga::Daemon::WinRMRunner).to receive(:new).and_return(win_rm_runner)
     end
 
     it "connects to the domain's name server over WinRM" do
@@ -125,10 +125,10 @@ describe Wonga::Daemon::DnsRecordCreateCommandHandler do
   end
   describe 'check_ip' do
     it 'returns an IP' do
-      subject.check_ip('www.ruby-lang.org').should =~ /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/
+      expect(subject.check_ip('www.ruby-lang.org')).to match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
     end
     it 'returns nil if the name does not exists' do
-      subject.check_ip('www11111111111.ruby-lang.org').should be_nil
+      expect(subject.check_ip('www11111111111.ruby-lang.org')).to be_nil
     end
   end
 end
