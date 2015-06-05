@@ -53,13 +53,15 @@ RSpec.describe Wonga::Daemon::DnsRecordCreateCommandHandler do
   end
 
   describe '#handle_message publishes message to error topic for terminated instance' do
-    let(:instance) { instance_double('AWS::EC2::Instance', private_ip_address: private_ip, status: :terminated).as_null_object }
+    let(:instance) { instance_double('AWS::EC2::Instance', private_ip_address: private_ip, state: instance_state_struct).as_null_object }
+    let(:instance_state_struct) { double }
     let(:aws_resource) { instance_double('Wonga::Daemon::AWSResource', find_server_by_id: instance) }
 
     before(:each) do
       allow(Wonga::Daemon::AWSResource).to receive(:new).and_return(aws_resource)
       allow(subject).to receive(:get_name_server).and_return(name_server)
       allow(subject).to receive(:create_a_record)
+      allow(instance_state_struct).to receive(:name).and_return('terminated')
     end
 
     it 'does not get name server' do

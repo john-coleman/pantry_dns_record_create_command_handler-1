@@ -15,8 +15,9 @@ module Wonga
       end
 
       def handle_message(message)
-        ec2_instance = AWSResource.new.find_server_by_id message['instance_id']
-        if ec2_instance.status == :terminated
+        ec2_instance = AWSResource.new(@error_publisher, @logger).find_server_by_id message['instance_id']
+        @logger.info "Got Instance #{ec2_instance.id} with state #{ec2_instance.state.name}"
+        if ec2_instance.state.name == 'terminated'
           send_error_message(message)
           return
         end
