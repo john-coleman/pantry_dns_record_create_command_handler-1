@@ -17,7 +17,7 @@ development:
   pantry:
     api_key: some_pantry_api_key
     request_timeout: 10
-    url: http://some.pantry.fqdn
+    url: http://pantry.example.com
   sqs:
     queue_name: daemon_specific_queue
   sns:
@@ -25,7 +25,7 @@ development:
     error_arn: daemon_specific_error_arn
  ad:
     username: your-name
-    password: and-password 
+    password: and-password
 test:
   aws:
     access_key_id: some_aws_iam_access_key_id
@@ -41,7 +41,7 @@ test:
   pantry:
     api_key: some_pantry_api_key
     request_timeout: 10
-    url: http://some.pantry.fqdn
+    url: http://pantry.example.com
   sqs:
     queue_name: daemon_specific_queue
   sns:
@@ -49,7 +49,7 @@ test:
     error_arn: daemon_specific_error_arn
  ad:
     username: your-name
-    password: and-password 
+    password: and-password
 production:
   aws:
     access_key_id: some_aws_iam_access_key_id
@@ -65,7 +65,7 @@ production:
   pantry:
     api_key: some_pantry_api_key
     request_timeout: 10
-    url: http://some.pantry.fqdn
+    url: http://pantry.example.com
   sqs:
     queue_name: daemon_specific_queue
   sns:
@@ -73,4 +73,4 @@ production:
     error_arn: daemon_specific_error_arn
  ad:
     username: your-name
-    password: and-password 
+    password: and-password
