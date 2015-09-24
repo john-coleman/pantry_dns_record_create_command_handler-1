@@ -21,7 +21,7 @@ Style/MultilineOperationIndentation:
   Enabled: false
 
 Metrics/LineLength:
-  Max: 180
+  Max: 202
 Metrics/MethodLength:
   Max: 35
 Metrics/ClassLength:
@@ -34,7 +34,3 @@ Metrics/AbcSize:
   Enabled: false
 Metrics/ParameterLists:
   Max: 6
-
-
-Rails/DefaultScope:
-  Enabled: false

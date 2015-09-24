@@ -60,8 +60,8 @@ module Wonga
 
       def check_ip(name)
         Resolv.getaddress(name)
-        rescue Resolv::ResolvError
-          nil
+      rescue Resolv::ResolvError
+        nil
       end
     end
   end
